@@ -1,20 +1,18 @@
 import apiClient.HttpClient;
 import config.BaseConfig;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import pojo.Pet;
 import pojo.answers.PetAnswer;
 
+@DisplayName("Тестирование работы API методов для Pet")
 public class TestPetStore {
 
     private final static long id = (int) (Math.random() * 1000);
     private final static Pet pet = Pet.builder().id(id).name("Vasiliy").build();
 
     /**
-     * Добавление нового питомца ----->
+     * Добавление нового питомца (Перед каждым тестом) ----->
      * Описание: проверка работы добавления нового питомца (pet)
      * Шаги воспроизведения:
      * -> Создание объекта класса Pet
@@ -40,6 +38,7 @@ public class TestPetStore {
      * -> отправленный питомец эквивалентен полученному питомцу
      */
     @Test
+    @DisplayName("Получение нового питомца")
     void shouldGetPet() {
         Response response = HttpClient.doGetRequest(BaseConfig.PET_URL + id);
         Assertions.assertEquals(200, response.statusCode());
@@ -62,6 +61,7 @@ public class TestPetStore {
      * -> ответ валиден схеме JSON
      */
     @Test
+    @DisplayName("Удаление нового питомца")
     void shouldDeletePet() {
         var answer = HttpClient.convert(HttpClient.doDeleteRequest(BaseConfig.PET_URL + id), PetAnswer.class);
         Assertions.assertAll(
@@ -85,6 +85,7 @@ public class TestPetStore {
      * -> отправленный питомец эквивалентен полученному питомцу
      */
     @Test
+    @DisplayName("Получение удаленного питомца (НЕГАТИВНЫЙ СЦЕНАРИЙ)")
     void notShouldGetPet() {
         var response = HttpClient.doDeleteRequest(BaseConfig.PET_URL + id);
         Assertions.assertEquals(200, response.statusCode());
@@ -112,6 +113,7 @@ public class TestPetStore {
      * -> отправленный питомец эквивалентен полученному питомцу
      */
     @Test
+    @DisplayName("Удаление питомца дважды (НЕГАТИВНЫЙ СЦЕНАРИЙ)")
     void notShouldDeletePetTwice() {
         var response = HttpClient.doDeleteRequest(BaseConfig.PET_URL + id);
         Assertions.assertEquals(200, response.statusCode());
